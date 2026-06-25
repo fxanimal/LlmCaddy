@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+<div class="min-h-screen bg-slate-950 text-slate-300 py-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-10 shadow-2xl">       
+        <div class="border-b border-slate-800 pb-6 mb-8 text-center sm:text-left">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 mb-4">
+                <span class="text-2xl">🔒</span>
+            </div>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight sm:text-4xl">
+                Privacy & Data Sovereignty
+            </h1>
+            <p class="mt-2 text-sm text-slate-400">
+                LlmCaddy Architected Privacy Policy & Disclosure Statement
+            </p>
+        </div>
+        <div class="bg-blue-500/5 border border-blue-500/20 rounded-xl p-4 mb-8">
+            <p class="text-sm leading-relaxed text-slate-300">
+                As an open-source, edge-first application, <strong class="text-blue-400">LlmCaddy is built to protect your absolute data sovereignty</strong>. We do not harvest, monetize, or track your personal information. Your conversations, configuration models, and credentials belong entirely to you.
+            </p>
+        </div>
+        <div class="space-y-6">           
+            <div class="flex gap-4 items-start p-4 hover:bg-slate-800/40 rounded-xl transition-all border border-transparent hover:border-slate-800">
+                <div class="flex-shrink-0 text-xl mt-0.5">🔑</div>
+                <div>
+                    <h2 class="text-base font-semibold text-white mb-1">Local Storage of Credentials & API Keys</h2>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        All API keys, endpoint configurations, and custom AI provider credentials inputted into LlmCaddy are stored exclusively within your browser's local sandbox storage (<code class="text-xs bg-slate-950 text-blue-400 px-1.5 py-0.5 rounded border border-slate-800">localStorage</code>) or persistent client-side database. This sensitive information is never transmitted to, processed by, or stored on LlmCaddy or <span class="text-slate-300 font-medium">llmcaddy.com</span> server infrastructures.
+                    </p>
+                </div>
+            </div>
+            <div class="flex gap-4 items-start p-4 hover:bg-slate-800/40 rounded-xl transition-all border border-transparent hover:border-slate-800">
+                <div class="flex-shrink-0 text-xl mt-0.5">🌐</div>
+                <div>
+                    <h2 class="text-base font-semibold text-white mb-1">Direct Client-to-Model Routing</h2>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        All inferencing requests and calls made to LLM providers (such as OpenAI, Anthropic, Gemini or custom setups) are executed directly via your browser's native JavaScript runtime. Your data routes straight from your local device to your chosen AI vendor. LlmCaddy serves as a secure client UI layer; it does not act as a middleman, proxy server, or text logger for your model traffic.
+                    </p>
+                </div>
+            </div>
+            <div class="flex gap-4 items-start p-4 hover:bg-slate-800/40 rounded-xl transition-all border border-transparent hover:border-slate-800">
+                <div class="flex-shrink-0 text-xl mt-0.5">🛑</div>
+                <div>
+                    <h2 class="text-base font-semibold text-white mb-1">Zero Data Collection Policy</h2>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        Neither the LlmCaddy application footprint nor the <span class="text-slate-300 font-medium">llmcaddy.com</span> project website tracks, profiles, or aggregates user behavioral analytics, metadata, prompt histories, or application telemetry metrics.
+                    </p>
+                </div>
+            </div>
+            <div class="flex gap-4 items-start p-4 hover:bg-slate-800/40 rounded-xl transition-all border border-transparent hover:border-slate-800">
+                <div class="flex-shrink-0 text-xl mt-0.5">☁️</div>
+                <div>
+                    <h2 class="text-base font-semibold text-white mb-1">User-Controlled Cloud Synchronization</h2>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        For environments utilizing synchronized profile states (such as our Anonymous Proxy or Server-Managed accounts), your compressed SQLite database binary payload is only mirrored upstream at your explicit direction or opt-in architecture confirmation. These dynamic snapshots are held strictly for session continuity and disaster data recovery, remaining completely inaccessible to any third parties.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-10 pt-6 border-t border-slate-800 text-center">
+            <p class="text-xs text-slate-500">
+                LlmCaddy is open-source software distributed under the MIT license. You are in full possession of your computing environment.
+            </p>
+        </div>
+    </div>
+</div>

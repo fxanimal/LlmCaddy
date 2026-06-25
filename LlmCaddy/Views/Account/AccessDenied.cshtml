@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Access denied";
+    Layout = "/Views/Shared/_Layout.cshtml";
+    var strDomainname = ViewBag.Domainname;
+}
+
+<div class="min-h-[70vh] flex flex-col items-center justify-center px-4 py-12">
+    <div class="max-w-md w-full bg-white border border-slate-200 rounded-3xl shadow-xl p-8 md:p-12 text-center">
+
+        <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-rose-50 text-rose-600 mb-8 animate-pulse">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0 0v2m0-2h2m-2 0l-2 2m3-13l4 4m0 0l4-4m-4 4V7m0 13a9 9 0 110-18 9 9 0 010 18z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636" />
+            </svg>
+        </div>
+
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-4">@ViewData["Title"]</h1>
+
+        <p class="text-slate-600 mb-8 leading-relaxed">
+            Oops! It looks like you don't have permission to view this resource on <span class="font-semibold text-slate-800">@strDomainname</span>.
+            This might be because you aren't logged in with the correct account or your subscription level doesn't cover this feature.
+        </p>
+
+        <div class="space-y-3">
+            <a href="/account/dashboard"
+               class="w-full inline-flex justify-center items-center px-6 py-3.5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl transition duration-200 shadow-lg active:scale-[0.98]">
+                Return to Dashboard
+            </a>
+
+            <a href="javascript:history.back()"
+               class="w-full inline-flex justify-center items-center px-6 py-3 border border-slate-300 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition duration-200">
+                Go Back
+            </a>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-slate-100">
+            <p class="text-xs text-slate-400 uppercase tracking-widest font-bold mb-2">Need help?</p>
+            <p class="text-sm text-slate-500">
+                Contact your administrator or <a href="/support" class="text-cyan-600 hover:text-cyan-700 font-bold">Support</a> if you believe this is an error.
+            </p>
+        </div>
+    </div>
+</div>

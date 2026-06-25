@@ -1,0 +1,65 @@
+﻿@model LlmCaddy.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Log in";
+    ViewData["PageLanguage"] = "en";
+    Layout = "/Views/Shared/_Layout.cshtml";
+    var strDomainname = ViewBag.Domainname;
+}
+
+<div class="min-h-[80vh] flex flex-col items-center justify-center px-4 py-12">
+    <div class="max-w-md w-full bg-white border border-slate-200 rounded-3xl shadow-xl overflow-hidden">
+        
+        <div class="p-8 pb-0 text-center">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-2xl bg-cyan-50 text-cyan-600 mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+            </div>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Welcome Back</h1>
+            <p class="text-slate-500 mt-2 text-sm">Please enter your details to access your <strong>@strDomainname</strong> account.</p>
+        </div>
+
+        <div class="p-8 md:p-10">
+            <form id="account" asp-action="Login" asp-controller="Account" method="post" class="space-y-5">
+                <div asp-validation-summary="ModelOnly" class="p-3 bg-rose-50 text-rose-600 text-sm rounded-lg font-medium" role="alert"></div>
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label asp-for="Input"></label>
+                    <input asp-for="Input" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all outline-none"  placeholder="Enter Username or Email" required />
+                    <span asp-validation-for="Input" class="text-danger"></span>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label asp-for="Password" class="block text-sm font-semibold text-slate-700">Password</label>
+                        <a asp-controller="Account" asp-action="ForgotPassword" class="text-xs font-bold text-cyan-600 hover:text-cyan-700 transition">Forgot password?</a>
+                    </div>
+                    <input asp-for="Password" type="password" 
+                           class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all outline-none" 
+                           placeholder="••••••••" />
+                    <span asp-validation-for="Password" class="text-xs text-rose-500 mt-1 block font-medium"></span>
+                </div>
+
+                <div class="flex items-center">
+                    <input asp-for="RememberMe" type="checkbox" class="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-slate-300 rounded transition cursor-pointer" />
+                    <label asp-for="RememberMe" class="ml-2 block text-sm text-slate-600 cursor-pointer select-none">Remember me for 30 days</label>
+                </div>
+
+                <button type="submit" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-4 px-4 rounded-xl transition duration-200 shadow-lg active:scale-[0.98]">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="mt-10 text-center">
+                <p class="text-sm text-slate-500">
+                    New to @strDomainname? 
+                    <a asp-controller="Account" asp-action="Register" class="font-bold text-cyan-600 hover:text-cyan-700 transition">Create an account</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

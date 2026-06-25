@@ -1,0 +1,258 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "LlmCaddy Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var staticProviders = new[] { "ChatGPT", "Claude", "Gemini", "Groq", "Mistral", "Cohere", "DeepSeek", "QWen" };
+}
+
+@Html.AntiForgeryToken()
+
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+    
+    <div class="pb-6 border-b border-slate-700/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-white">Cluster Governance Dashboard</h1>
+            <p class="mt-1 text-sm text-slate-400">Manage global proxy environments and individual user LLM matrix keys.</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="p-4 text-sm text-emerald-400 bg-emerald-950/30 rounded-xl border border-emerald-500/30 shadow-md">
+            @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="p-4 text-sm text-rose-400 bg-rose-950/30 rounded-xl border border-rose-500/30 shadow-md">
+            @TempData["Error"]
+        </div>
+    }
+
+    <div class="p-6 border shadow-xl bg-slate-800 rounded-xl border-slate-700/70">
+        <div class="mb-4">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <span class="p-1 rounded bg-slate-700 text-slate-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                </span>
+                Update Security Credentials
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">Modify your active administrator login credentials stored in Postgres.</p>
+        </div>
+        
+        <form asp-controller="Account" asp-action="AdminChangePassword" method="post" class="space-y-4">
+            <div>
+                <label class="block text-xs font-mono text-slate-300 uppercase mb-1.5 font-semibold">Current Password</label>
+                <input type="password" name="oldPassword" required class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="••••••••" />
+            </div>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 uppercase mb-1.5 font-semibold">New Password</label>
+                    <input type="password" name="newPassword" required class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="••••••••" />
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 uppercase mb-1.5 font-semibold">Confirm New Password</label>
+                    <input type="password" name="confirmPassword" required class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="••••••••" />
+                </div>
+            </div>
+            <div class="pt-2">
+                <button type="submit" class="w-full sm:w-auto text-xs bg-white hover:bg-slate-100 text-slate-900 font-bold px-5 py-2.5 rounded-lg shadow-lg shadow-slate-950/50 transition cursor-pointer tracking-wide">
+                    Change Password
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="p-6 border shadow-xl bg-slate-800 rounded-xl border-slate-700/70">
+        <div class="md:flex md:items-center md:justify-between gap-6">
+            <div class="max-w-3xl">
+                <div class="flex items-center gap-2 mb-1.5">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">System Core</span>
+                    <h2 class="text-xl font-bold text-white">Global Network Routing Engine</h2>
+                </div>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                    Switch how LlmCaddy handles incoming requests. **Pure JS Proxy (0)** runs entirely within client browsers. **Managed Server Proxy (1)** securely routes requests via corporate host infrastructures.
+                </p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-mono font-bold tracking-wider transition-colors duration-200 @(Model.GlobalRoutingMode == 0 ? "text-emerald-400" : "text-slate-400")">PURE JS (0)</span>
+                <button type="button" 
+                        onclick="changeGlobalProxy(@(Model.GlobalRoutingMode == 0 ? 1 : 0))" 
+                        class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none @(Model.GlobalRoutingMode == 1 ? "bg-white" : "bg-slate-800 border-slate-700")">
+                    <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full shadow-md ring-0 transition duration-200 ease-in-out @(Model.GlobalRoutingMode == 1 ? "bg-slate-950 translate-x-5" : "bg-slate-400 translate-x-0")"></span>
+                </button>
+                <span class="text-xs font-mono font-bold tracking-wider transition-colors duration-200 @(Model.GlobalRoutingMode == 1 ? "text-emerald-400" : "text-slate-400")">SERVER PROXY (1)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-6 border shadow-xl bg-slate-800 rounded-xl border-slate-700/70">
+        <div class="mb-4">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <span class="p-1 rounded bg-slate-700 text-slate-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                </span>
+                Provision New Account
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">Public registration is disabled. Use this panel to manually add local users to the cluster.</p>
+        </div>
+        
+        <form asp-controller="Account" asp-action="AdminCreateUser" method="post" class="space-y-4">
+            <div>
+                <label class="block text-xs font-mono text-slate-300 uppercase mb-1.5 font-semibold">Target Username</label>
+                <input type="text" name="username" required class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition font-mono" placeholder="e.g. engineer01" />
+            </div>
+            <div>
+                <label class="block text-xs font-mono text-slate-300 uppercase mb-1.5 font-semibold">Initial Password</label>
+                <input type="password" name="password" required class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="Min. 6 chars with digits" />
+            </div>
+            <div class="pt-2">
+                <button type="submit" class="w-full sm:w-auto text-xs bg-white hover:bg-slate-100 text-slate-900 font-bold px-5 py-2.5 rounded-lg shadow-lg shadow-slate-950/50 transition cursor-pointer tracking-wide">
+                    Create User Account
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="overflow-hidden border shadow-xl bg-slate-800 rounded-xl border-slate-700/70">
+        <div class="p-6 border-b border-slate-700/60 bg-slate-800">
+            <h2 class="text-xl font-bold text-white">User Application Authorization Matrix</h2>
+            <p class="mt-1 text-sm text-slate-400">Permit or deny individual user access to core engines and custom SQL endpoints.</p>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="text-xs font-mono tracking-wider border-b bg-slate-900/60 border-slate-700 text-slate-300 uppercase select-none">
+                        <th class="py-4 px-6 min-w-[200px] font-bold text-slate-200">Identity Profile</th>
+                        @foreach (var provider in staticProviders)
+                        {
+                            <th class="py-4 px-3 text-center font-bold">@provider</th>
+                        }
+                        @foreach (var custom in Model.CustomProviders)
+                        {
+                            <th class="py-4 px-3 text-center font-bold text-amber-400 bg-amber-500/5 border-x border-slate-700/40">@custom.DisplayName</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-700/40 text-sm bg-slate-800/20">
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr class="hover:bg-slate-700/40 transition duration-150">
+                            <td class="py-4 px-6 font-semibold text-white whitespace-nowrap border-r border-slate-700/30">
+                                <div class="flex items-center gap-2.5 font-mono text-xs">
+                                    <div class="h-2 w-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-400"></div>
+                                    @user.UserName
+                                </div>
+                            </td>
+                            
+                            @foreach (var provider in staticProviders)
+                            {
+                                var key = $"{user.Id}_{provider}";
+                                // Opt-out logic: If key doesn't exist, default state value resolves to TRUE (Permitted)
+                                bool isChecked = !Model.PermissionsLookup.ContainsKey(key) || Model.PermissionsLookup[key];
+    
+                                <td class="py-4 px-3 text-center whitespace-nowrap">
+                                    <label class="inline-flex items-center justify-center cursor-pointer p-1">
+                                        <input type="checkbox" 
+                                                onchange="patchPermission('@user.Id', '@provider', this.checked)" 
+                                                class="sr-only peer" 
+                                                @(isChecked ? "checked" : "")>
+                                        <div class="relative w-8 h-4 bg-slate-900 border border-slate-700/60 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-emerald-600 peer-checked:border-emerald-500 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-slate-400 after:rounded-full after:h-2.5 after:w-2.5 after:transition-all"></div>
+                                    </label>
+                                </td>
+                            }
+
+                            @foreach (var custom in Model.CustomProviders)
+                            {
+                                var key = $"{user.Id}_{custom.Id}";
+                                // Opt-out logic: If key doesn't exist, default state value resolves to TRUE (Permitted)
+                                bool isChecked = !Model.PermissionsLookup.ContainsKey(key) || Model.PermissionsLookup[key];
+
+                                <td class="py-4 px-3 text-center whitespace-nowrap bg-amber-500/5 border-x border-slate-700/30">
+                                    <label class="inline-flex items-center justify-center cursor-pointer p-1">
+                                        <input type="checkbox" 
+                                                onchange="patchPermission('@user.Id', '@custom.Id', this.checked)" 
+                                                class="sr-only peer" 
+                                                @(isChecked ? "checked" : "")>
+                                        <div class="relative w-8 h-4 bg-slate-900 border border-slate-700/60 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-amber-600 peer-checked:border-amber-500 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-slate-400 after:rounded-full after:h-2.5 after:w-2.5 after:transition-all"></div>
+                                    </label>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getVerificationToken() {
+        return document.querySelector('input[name="__RequestVerificationToken"]').value;
+    }
+
+    async function changeGlobalProxy(targetMode) {
+        const button = event.currentTarget;
+        const knob = button.querySelector('span');
+    
+        // Optimistic UI state flip
+        if (targetMode === 1) {
+            button.classList.remove('bg-slate-700');
+            button.classList.add('bg-emerald-500');
+            knob.classList.remove('translate-x-0');
+            knob.classList.add('translate-x-5');
+        } else {
+            button.classList.remove('bg-emerald-500');
+            button.classList.add('bg-slate-700');
+            knob.classList.remove('translate-x-5');
+            knob.classList.add('translate-x-0');
+        }
+
+        try {
+            const response = await fetch('/account/UpdateGlobalRouting', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': getVerificationToken()
+                },
+                body: JSON.stringify({ mode: targetMode })
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('Server side rejected configuration adjustment.');
+                window.location.reload();
+            }
+        } catch (err) {
+            console.error('Network execution failure:', err);
+            alert('An error occurred while updating the global network engine.');
+            window.location.reload();
+        }
+    }
+
+    async function patchPermission(userId, providerKey, isEnabled) {
+        try {
+            const response = await fetch('/account/UpdateUserPermission', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': getVerificationToken()
+                },
+                body: JSON.stringify({ 
+                    userId: userId, 
+                    providerKey: providerKey, 
+                    isEnabled: isEnabled 
+                })
+            });
+
+            if (!response.ok) {
+                console.error('Matrix update rejected by access control loops.');
+            }
+        } catch (err) {
+            console.error('Failed to dispatch permission sync task:', err);
+        }
+    }
+</script>

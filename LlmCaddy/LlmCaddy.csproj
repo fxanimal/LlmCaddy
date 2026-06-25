@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b7734543-5b69-4f39-ace4-15bda85d74a4</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+<PropertyGroup>
+    <StaticWebAssetWasmEnabled>true</StaticWebAssetWasmEnabled>
+</PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.79" />
+    <PackageReference Include="DnsClient" Version="1.8.0" />
+    <PackageReference Include="MailKit" Version="4.17.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.9" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="11.0.0-preview.5.26302.115" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.26.0" />
+    <PackageReference Include="Microsoft.ML.Tokenizers" Version="3.0.0-preview.26160.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
+    <PackageReference Include="MimeKit" Version="4.17.0" />
+    <PackageReference Include="Nanoid" Version="3.1.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
+    <PackageReference Include="Resend" Version="0.5.1" />
+    <PackageReference Include="System.Numerics.Tensors" Version="11.0.0-preview.5.26302.115" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\download\sqlite3.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\models\minilm\config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\models\minilm\model.onnx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\models\minilm\special_tokens_map.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\models\minilm\tokenizer.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\models\minilm\tokenizer_config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\models\minilm\vocab.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Dockerfile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

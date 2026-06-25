@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using LlmCaddy.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LlmCaddy</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+</head>
+<body class="h-screen flex flex-col bg-slate-50 overflow-hidden">
+    <header class="flex-shrink-0 bg-slate-900 border-b border-slate-800 shadow-xl">
+        <nav class="mx-auto px-6 py-4 flex justify-between items-center">
+            <a class="text-2xl font-black text-white tracking-tighter" href="/">
+                LLM<span class="text-blue-500">CADDY</span>
+            </a>
+
+            @RenderSection("SyncSection", false)
+
+            <div class="flex items-center gap-4">
+                @Html.AntiForgeryToken()
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <a href="/account/dashboard" class="text-sm font-semibold text-slate-300 hover:text-white">Dashboard</a>
+                        <span class="h-4 w-px bg-slate-700"></span>
+                    }
+                    @RenderSection("SyncSection2", false)
+                    <span class="h-4 w-px bg-slate-700"></span>
+                    <form asp-controller="Account" asp-action="Logout" asp-route-returnUrl="/account/login" method="post" class="inline" onclick="localStorage.removeItem('LlmCaddy_ExplicitClientId');">
+                        <button type="submit" class="text-sm text-slate-400 hover:text-rose-400 transition cursor-pointer">
+                            Logout
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a href="/account/login" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition">Login</a>
+                    @RenderSection("SyncSection2", false)
+                }
+            </div>
+        </nav>
+    </header>
+    <main role="main" class="flex-1 flex flex-col min-h-0 overflow-hidden"> 
+        @RenderBody()
+    </main>
+    <footer class="flex-shrink-0 border-t border-slate-200 bg-slate-50 py-4 text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 text-center sm:text-left">
+            <p class="text-xs">
+                &copy; @DateTime.Now.Year - <span class="font-semibold text-slate-900">LlmCaddy</span> -
+                <a href="privacy" class="text-blue-600 hover:underline">Privacy</a>
+            </p>
+        </div>
+    </footer>
+    <script defer src="/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,323 @@
+﻿@{
+    ViewData["Title"] = "LLM Caddy";
+    ViewData["PageLanguage"] = "en";
+    Layout = "/Views/Shared/_Layout.cshtml";
+    var strDomainname = ViewBag.Domainname;
+}
+
+<div class="flex h-screen bg-slate-50 text-slate-900 overflow-hidden">
+    <aside class="w-64 flex-shrink-0 bg-slate-900 text-white flex flex-col">
+        <div class="p-4 border-b border-slate-700 font-bold text-xl flex items-center gap-2">
+            <span class="text-blue-400">⛳</span> LlmCaddy
+        </div>
+
+        <nav class="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
+            <button class="w-full text-left p-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm truncate">
+                How to build a golf app...
+            </button>
+            <button class="w-full text-left p-3 rounded-lg hover:bg-slate-800 text-sm truncate text-slate-400">
+                PostgreSQL Optimization
+            </button>
+        </nav>
+
+        <div class="p-4 border-t border-slate-700 flex flex-col gap-2">
+            <a class="w-full py-2 px-4 border border-slate-600 hover:bg-slate-800 text-white text-sm rounded-lg text-center">
+                Login
+            </a>
+            <a class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded-lg text-center">
+                Sign up for free
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col bg-white">
+        <header class="h-16 border-b flex items-center bg-white/80 backdrop-blur-md sticky top-0 z-10 px-6">
+            <div class="max-w-7xl mx-auto w-full flex justify-between items-center px-4">
+                <h2 class="font-semibold text-slate-700">Current Session</h2>
+                <div id="model-badges" class="flex gap-2 flex-wrap justify-end">
+                    <div class="relative group flex items-center">
+                        <span id="badge-openai" onclick="selectModel('ChatGPT', 'openai')" class="cursor-pointer px-2 py-1 rounded bg-slate-200 text-slate-600 text-xs font-medium transition-all">ChatGPT</span>
+                        <button onclick="openKeySettings('ChatGPT', 'openai')" class="ml-1 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-orange-500 transition-opacity text-xs">⚙️</button>
+                    </div>
+
+                    <div class="relative group flex items-center">
+                        <span id="badge-anthropic" onclick="selectModel('Claude', 'anthropic')" class="cursor-pointer px-2 py-1 rounded bg-slate-200 text-slate-600 text-xs font-medium transition-all">Claude</span>
+                        <button onclick="openKeySettings('Claude', 'anthropic')" class="ml-1 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-orange-500 transition-opacity text-xs">⚙️</button>
+                    </div>
+
+                    <div class="relative group flex items-center">
+                        <span id="badge-google" onclick="selectModel('Gemini', 'google')" class="cursor-pointer px-2 py-1 rounded bg-slate-200 text-slate-600 text-xs font-medium transition-all">Gemini</span>
+                        <button onclick="openKeySettings('Gemini', 'google')" class="ml-1 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-orange-500 transition-opacity text-xs">⚙️</button>
+                    </div>
+
+                    <div class="relative group flex items-center">
+                        <span id="badge-groq" onclick="selectModel('Groq', 'groq')" class="cursor-pointer px-2 py-1 rounded bg-slate-200 text-slate-600 text-xs font-medium transition-all">Groq</span>
+                        <button onclick="openKeySettings('Groq', 'groq')" class="ml-1 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-orange-500 transition-opacity text-xs">⚙️</button>
+                    </div>
+
+                    <div class="relative group flex items-center">
+                        <span id="badge-mistral" onclick="selectModel('Mistral', 'mistral')" class="cursor-pointer px-2 py-1 rounded bg-slate-200 text-slate-600 text-xs font-medium transition-all">Mistral</span>
+                        <button onclick="openKeySettings('Mistral', 'mistral')" class="ml-1 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-orange-500 transition-opacity text-xs">⚙️</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="flex-1 overflow-y-auto p-6 bg-slate-50/50">
+            <div class="w-full space-y-8">
+                <div class="flex justify-end gap-3">
+                    <div class="bg-blue-600 text-white p-4 rounded-2xl rounded-tr-none text-sm max-w-2xl">
+                        Can you explain PostgreSQL optimization?
+                    </div>
+                </div>
+                <div class="flex justify-start gap-3">
+                    <div class="bg-white border p-5 rounded-2xl rounded-tl-none text-sm w-full">
+                        <p class="font-semibold text-xs text-slate-400 mb-2">LlmCaddy</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Indexing improvements</li>
+                            <li>Connection pooling</li>
+                            <li>Vacuum tuning</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <footer class="p-4 bg-white border-t">
+            <div class="w-full relative">
+                <textarea class="w-full p-4 pr-12 rounded-xl border"
+                          placeholder="Ask LlmCaddy anything..."></textarea>
+                <button class="absolute right-3 bottom-3 p-2 bg-blue-600 text-white rounded-lg">
+                    ➤
+                </button>
+            </div>
+            <p class="text-center text-[10px] text-slate-400 mt-2">
+                LLMs can make mistakes.
+            </p>
+        </footer>
+
+    </main>
+</div>
+<script>
+    const providers = ['openai', 'anthropic', 'google', 'groq', 'mistral'];
+    let selectedProviders = new Set();
+
+    document.addEventListener('DOMContentLoaded', () => {
+        providers.forEach(p => refreshBadgeUI(p));
+        providers.forEach(p => {
+            const badge = document.getElementById(`badge-${p}`);
+            if (badge) {
+                badge.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    openKeySettings(badge.textContent.trim(), p);
+                });
+            }
+        });
+    });
+
+    function refreshBadgeUI(provider) {
+        const badge = document.getElementById(`badge-${provider}`);
+        if (!badge) {
+            console.error(`Could not find badge for: badge-${provider}`);
+            return;
+        }
+
+        const storageKey = `llmcaddy_api_key_${provider}`;
+        const keyVal = localStorage.getItem(storageKey);
+        const hasKey = keyVal !== null && keyVal.trim().length > 0;
+        const isActive = selectedProviders.has(provider);
+
+        // Reset base styles
+        badge.style.transition = "all 0.2s ease";
+
+        if (isActive) {
+            // ACTIVE: Solid Orange
+            badge.style.backgroundColor = "#f97316"; // orange-500
+            badge.style.color = "#ffffff";
+            badge.style.boxShadow = "0 0 0 2px #fdba74"; // ring-orange-300
+        } else if (hasKey) {
+            // CONFIGURED: Light Orange
+            badge.style.backgroundColor = "#ffedd5"; // orange-100
+            badge.style.color = "#ea580c";           // orange-600
+            badge.style.boxShadow = "none";
+        } else {
+            // EMPTY: Gray
+            badge.style.backgroundColor = "#e2e8f0"; // slate-200
+            badge.style.color = "#475569";           // slate-600
+            badge.style.boxShadow = "none";
+        }
+    }
+
+    async function selectModel(modelName, provider) {
+        const storageKey = `llmcaddy_api_key_${provider}`;
+        const hasKey = localStorage.getItem(storageKey);
+
+        if (!hasKey) {
+            openKeySettings(modelName, provider);
+        } else {
+            if (selectedProviders.has(provider)) {
+                selectedProviders.delete(provider);
+            } else {
+                selectedProviders.add(provider);
+            }
+            providers.forEach(p => refreshBadgeUI(p));
+        }
+    }
+
+    function openKeySettings(modelName, provider) {
+        const storageKey = `llmcaddy_api_key_${provider}`;
+        const existingKey = localStorage.getItem(storageKey) || '';
+
+        const oldModal = document.getElementById('key-modal');
+        if (oldModal) oldModal.remove();
+
+        const dialog = document.createElement('dialog');
+        dialog.id = 'key-modal';
+        dialog.innerHTML = `
+                <div style="width: 300px; padding: 20px; font-family: sans-serif; background: white;">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0; font-size: 18px; color: #1e293b;">${modelName} Key</h3>
+                        <p style="font-size: 11px; color: #64748b;">Key is stored in your local browser.</p>
+                    </div>
+
+                    <input type="text" id="popupApiKey" value="${existingKey}"
+                           style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box;"
+                           placeholder="sk-...">
+
+                    <div style="display: flex; gap: 10px;">
+                        <button id="closeBtn" style="flex: 1; padding: 10px; border: none; border-radius: 8px; background: #f1f5f9; color: #475569; cursor: pointer; font-weight: 600;">Cancel</button>
+                        <button id="saveBtn" style="flex: 1; padding: 10px; border: none; border-radius: 8px; background: #ea580c; color: #ffffff; cursor: pointer; font-weight: 600;">Save Key</button>
+                    </div>
+                </div>
+            `;
+
+        document.body.appendChild(dialog);
+
+        dialog.style.border = "none";
+        dialog.style.borderRadius = "16px";
+        dialog.style.padding = "0";
+        dialog.style.boxShadow = "0 25px 50px -12px rgba(0, 0, 0, 0.25)";
+
+        dialog.showModal();
+
+        dialog.querySelector('#saveBtn').onclick = () => {
+            const val = document.getElementById('popupApiKey').value.trim();
+            if (val.length > 0) {
+                localStorage.setItem(storageKey, val);
+                selectedProviders.add(provider); 
+            } else {
+                localStorage.removeItem(storageKey);
+                selectedProviders.delete(provider);
+            }
+            dialog.close();
+        };
+
+        dialog.querySelector('#closeBtn').onclick = () => dialog.close();
+
+        dialog.onclose = () => {
+            providers.forEach(p => refreshBadgeUI(p));
+            dialog.remove();
+        };
+    }
+    
+    //initialize sqlite.wasm and llmcaddy.js
+    class SQLiteClient {
+        constructor() {
+            this.worker = new Worker('/download/llmcaddy.js');
+            this.resolvers = new Map();
+            this.rejecters = new Map();
+            this.isReady = false;
+
+            this.init();
+        }
+
+        init() {
+            this.worker.onmessage = (event) => {
+                const { type, rows, error, correlationId } = event.data;
+                const alertBox = document.getElementById('db-error-alert');
+
+                switch (type) {
+                    case 'STATUS_READY':
+                        this.isReady = true;
+                        if (alertBox) alertBox.classList.add('hidden');
+                        console.log('[Client] DB client pipeline connection initialized.');
+                        break;
+
+                    case 'STATUS_ERROR':
+                        console.error('[Client] Core DB failure:', error);
+                        if (alertBox) {
+                            alertBox.textContent = `Database initialization failure: ${error}`;
+                            alertBox.classList.remove('hidden');
+                        }
+                        break;
+
+                    case 'QUERY_SUCCESS':
+                        if (this.resolvers.has(correlationId)) {
+                            this.resolvers.get(correlationId)(rows);
+                            this.cleanupTransaction(correlationId);
+                        }
+                        break;
+
+                    case 'QUERY_ERROR':
+                        if (this.rejecters.has(correlationId)) {
+                            this.rejecters.get(correlationId)(new Error(error));
+                            this.cleanupTransaction(correlationId);
+                        }
+                        break;
+                }
+            };
+
+            // Command the background worker thread to kick off module parsing
+            this.worker.postMessage({ type: 'INIT' });
+        }
+
+        /**
+         * Executes asynchronous queries through the worker via a Promise structure
+         */
+        query(sql, bind = []) {
+            return new Promise((resolve, reject) => {
+                const correlationId = crypto.randomUUID();
+
+                this.resolvers.set(correlationId, resolve);
+                this.rejecters.set(correlationId, reject);
+
+                this.worker.postMessage({
+                    type: 'EXEC_SQL',
+                    sql,
+                    bind,
+                    correlationId
+                });
+            });
+        }
+
+        cleanupTransaction(id) {
+            this.resolvers.delete(id);
+            this.rejecters.delete(id);
+        }
+    }
+
+    // Instantiate globally to share across the application context
+    const dbClient = new SQLiteClient();
+
+    async function manageChatLog() {
+        // 1. Setup Table Schema
+        await dbClient.query(`
+            CREATE TABLE IF NOT EXISTS ChatLogs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                prompt TEXT NOT NULL,
+                response TEXT NOT NULL,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        // 2. Insert record via safe binding lists
+        await dbClient.query(
+            "INSERT INTO ChatLogs (prompt, response) VALUES (?, ?);",
+            ["Hello Local DB!", "Hi there, I am running completely out of your local OPFS storage!"]
+        );
+
+        // 3. Select payload array cleanly
+        const history = await dbClient.query("SELECT * FROM ChatLogs ORDER BY timestamp DESC;");
+        console.log("Retrieved Records from SQLite:", history);
+    }
+</script>
